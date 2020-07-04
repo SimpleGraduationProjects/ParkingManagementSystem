@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>订票网</title>
+<link rel="stylesheet" type="text/css" th:href="@{/moban/css/index.css}" />
+<link rel="stylesheet" type="text/css" th:href="@{/moban/css/animate-custom.css}" />
+</head>
+<body style="background: #fff url(/moban/images/bg.jpg) repeat top left;">
+
+<div id="container_demo" >
+	<a class="hiddenanchor" id="toregister"></a>
+	<a class="hiddenanchor" id="tologin"></a>
+	<div id="wrapper">
+		<div id="login" class="animate form" >
+			<form  action="/user/login" autocomplete="on" method="post">
+				<h1>登录</h1> 
+				<p> 
+					<label for="username" class="uname" data-icon="u" >您的用户名</label>
+					<input id="username" name="name" required="required" type="text" placeholder="请输入用户名"/>
+				</p>
+				<p> 
+					<label for="password" class="youpasswd" data-icon="p">你的密码</label>
+					<input id="password" name="password" required="required" type="password" placeholder="请输入密码" />
+				</p>
+				<p> 
+					<span style="color: red;font-size: 18px" th:text="${msg}"></span>
+				</p>
+				<p class="login button"> 
+					<input type="submit" value="登录" /> 
+				</p>
+				<p class="change_link">
+					不是成员?<a href="#toregister" class="to_register">加入我们</a>
+				</p>
+			</form>
+		</div>
+
+		<div id="register" class="animate form">
+			<form  action="/user/user-save" autocomplete="on" method="post">
+				<h1>注册</h1> 
+				<p> 
+					<label for="usernamesignup" class="uname" data-icon="u">用户名</label>
+					<input id="usernamesignup" name="name" required="required" type="text" placeholder="用户名" />
+				</p>
+				<p> 
+					<label for="tel" class="youmail">联系电话</label>
+					<input id="tel" name="phone" required="required" type="tel" placeholder="联系电话"/>
+				</p>
+				<p> 
+					<label for="academy" class="youmail">车牌号码</label>
+					<input id="academy" name="plate_num" required="required" type="tel" placeholder="车牌号码"/>
+				</p>
+				<p> 
+					<label for="passwordsignup" class="youpasswd" data-icon="p">密码</label>
+					<input id="passwordsignup" name="password" required="required" type="password" placeholder="密码"/>
+				</p>
+				<p class="signin button"> 
+					<input type="submit" value="注册"/> 
+				</p>
+				<p class="change_link">  
+					已经是成员?<a href="#tologin" class="to_register"> 去登录 </a>
+				</p>
+			</form>
+		</div>
+		
+	</div>
+	
+</div>
+	
+</body>
+</html>

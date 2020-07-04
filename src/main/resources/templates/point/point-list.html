@@ -1,0 +1,45 @@
+﻿<!DOCTYPE HTML>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/head :: commonHead('积分列表')">
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 积分管理 <span class="c-gray en">&gt;</span> 积分排行 
+<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i id="shuaxin" class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+	<div class="text-c">
+	<form action="/admin/findPointByName">
+		<input type="text" th:value="${nameTmp}" class="input-text" style="width:250px" placeholder="输入名称" id="" name="nameTmp" />
+		<button type="submit" class="btn btn-success" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
+	</form>
+	</div>
+	<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="r">共有数据：<strong th:text="${pointNum}"></strong> 条</span> </div>
+	<table class="table table-border table-bordered table-bg">
+		<thead>
+			<tr>
+				<th scope="col" colspan="9">积分排行榜</th>
+			</tr>
+			<tr class="text-c">
+				<th width="45">序号</th>
+				<th width="150">用户名称</th>
+				<th width="100">注册时间</th>
+				<th width="100">积分</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="text-c" th:each="point,pointStat : ${pointList}">
+				<td>
+				<span th:text="${pointStat.index+1}"></span>
+				</td>
+				<td th:text="${point.name}"></td>
+				<td th:text="${#calendars.format(point.createDate,'yyyy-MM-dd')}"></td>
+				<td th:text="${point.point}"></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<!-- 引入公共js -->
+<span th:include="/common/on-load-js :: commonOnLoadJs"></span>
+
+</body>
+</html>

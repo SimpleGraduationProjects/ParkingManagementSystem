@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/moban/css/index.css}"/>
+    <link rel="stylesheet" th:href="@{/moban/css/table.css}"/>
+	<script th:src="@{/moban/js/jquery-1.11.2.min.js}"></script>
+	<script th:src="@{/moban/js/main.js}"></script>
+	<title>我的订单</title>
+</head>
+<style>
+	.help-main p {
+		line-height: 50px;
+	}
+</style>
+<body >
+
+<span th:replace="/common/head2 :: header"></span>
+
+<div class="help-wrap">
+	<div class="container clearfix">
+		<div class="bread">当前位置：
+			<a href="#">首页</a> >
+			<a href="#">订单管理</a> >
+			<a href="#">我的订单</a>
+		</div>
+		<span th:replace="/common/userinfo :: userer"></span>
+		<div class="help-r fr">
+			<div class="help-item-title">已买车票</div>
+			<div class="help-main">
+				<table class="table table-hover" th:if="${orderList}">
+				<thead>
+					<tr >
+			        <th>订单编号</th>
+			        <th>下单时间</th>
+			        <th>车牌号</th>
+			        <th>车位编号</th>
+			        <th>车位价格</th>
+			        <th>应付金额</th>
+			        <th>状态</th>
+			        <th>操作</th>
+			      </tr>
+			      <tr>
+			        
+			      <tr th:each="order,orderStat : ${orderList}">
+                     <input type="hidden" th:value="${order.id}" class="inp"/>
+
+				      <td th:text="${order.code}"></td>
+				      <td th:text="${#calendars.format(order.createDate,'yyyy-MM-dd')}"></td>
+				      <td th:text="${order.plate_num}"></td>
+				      <td th:text="${order.park_name}"></td>
+				      <td th:text="${order.price}"></td>
+				      <td th:text="${order.total}"></td>
+				      <td>
+				      	<span th:if="${order.status==0}" style="color: red">待付款</span>
+				      	<span th:if="${order.status==1}" style="color: green;">订单完成</span>
+				      </td>
+				      <td>
+<!--                          th:href="@{'/order/jiesuan?id='+${order.id}}"-->
+				      	<a th:if="${order.status==0}"  onclick="QR_code(this,'付款', '/order/QR_code','400','400')"  >结算</a>
+				      	<a th:if="${order.status==1}"  th:href="@{'/order/delOrder?orderId='+${order.id}}">删除</a>
+				      </td>
+			        </tr>
+				</tbody>
+			</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<span th:replace="/common/foot :: footer"></span>
+
+
+<!-- 引入公共js -->
+<span th:include="/common/on-load-js :: commonOnLoadJs"></span>
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+
+
+    function QR_code(obj,title,url,w,h){
+        var orderId = $(obj).parents("tr").find(".inp").val();
+        var urltmp = url+"?orderId="+orderId;
+        layer_show(title,urltmp,w,h);
+    }
+
+</script>
+</body>
+</html>

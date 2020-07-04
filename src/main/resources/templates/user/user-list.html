@@ -1,0 +1,121 @@
+﻿<!DOCTYPE HTML>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/head :: commonHead('用户列表')">
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 系统管理 <span class="c-gray en">&gt;</span> 用户列表 
+<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i id="shuaxin" class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+	<div class="text-c">
+	<form action="/admin/findUserByName">
+		<input type="text" th:value="${nameTmp}" class="input-text" style="width:250px" placeholder="输入名称" id="" name="nameTmp" />
+		<button type="submit" class="btn btn-success" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜用户</button>
+	</form>
+	</div>
+	<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="r">共有数据：<strong th:text="${userNum}"></strong> 条</span> </div>
+	<table class="table table-border table-bordered table-bg">
+		<thead>
+			<tr>
+				<th scope="col" colspan="9">用户列表</th>
+			</tr>
+			<tr class="text-c">
+				<th width="45">序号</th>
+				<th width="150">用户名称</th>
+				<th width="150">电话号码</th>
+				<th width="100">车牌号</th>
+				<th width="100">注册时间</th>
+				<th width="100">状态</th>
+				<th width="100">操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="text-c" th:each="user,userStat : ${userList}">
+				<td>
+				<span th:text="${userStat.index+1}"></span>
+				<input type="hidden" th:value="${user.id}" class="inp"/>
+				</td>
+				<td th:text="${user.name}"></td>
+				<td th:text="${user.phone}"></td>
+				<td th:text="${user.plate_num}"></td>
+				<td th:text="${#calendars.format(user.createDate,'yyyy-MM-dd')}"></td>
+				<td class="td-status">
+				<span class="label label-success radius"  th:if="${user.stauts}==0">已启用</span>
+				<span class="label radius" th:if="${user.stauts}!=0">已停用</span></td>
+				<td class="td-manage">
+				<a th:if="${user.stauts}==0" style="text-decoration:none" onClick="admin_stop(this)" 
+				href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe631;</i></a>
+				<a th:if="${user.stauts}!=0" style="text-decoration:none" onClick="admin_start(this)"  
+				href="javascript:;" title="启用"><i class="Hui-iconfont">&#xe615;</i></a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<!-- 引入公共js -->
+<span th:include="/common/on-load-js :: commonOnLoadJs"></span>
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+/*
+	参数解释：
+	title	标题
+	url		请求的url
+	id		需要操作的数据id
+	w		弹出层宽度（缺省调默认值）
+	h		弹出层高度（缺省调默认值）
+*/
+
+/*管理员-停用*/
+function admin_stop(obj){
+	layer.confirm('确认要停用吗？',function(index){
+		//此处请求后台程序，下方是成功后的前台处理……
+		var userId = $(obj).parents("tr").find(".inp").val();
+		$.ajax({
+			type: 'POST',
+			url: '/admin/stopUser',
+			data:{"userId":userId},
+			dataType: 'json',
+			success: function(data){
+				if(data.res==0){
+					$(obj).parents("tr").find(".td-manage").prepend('<a onClick="admin_start(this)" href="javascript:;" title="启用" style="text-decoration:none"><i class="Hui-iconfont">&#xe615;</i></a>');
+					$(obj).parents("tr").find(".td-status").html('<span class="label radius">已停用</span>');
+					$(obj).remove();
+					layer.msg('已停用!',{icon: 5,time:1000});
+				}else{
+					layer.msg('操作失败!',{icon: 2,time:1000});
+				}
+			}
+		});
+		
+	});
+}
+
+/*管理员-启用*/
+function admin_start(obj){
+	layer.confirm('确认要启用吗？',function(index){
+		//此处请求后台程序，下方是成功后的前台处理……
+		var userId = $(obj).parents("tr").find(".inp").val();
+		$.ajax({
+			type: 'POST',
+			url: '/admin/startUser',
+			data:{"userId":userId},
+			dataType: 'json',
+			success: function(data){
+				console.log(data);
+				if(data.res==0){
+					$(obj).parents("tr").find(".td-manage").prepend('<a onClick="admin_stop(this)" href="javascript:;" title="停用" style="text-decoration:none"><i class="Hui-iconfont">&#xe631;</i></a>');
+					$(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">已启用</span>');
+					$(obj).remove();
+					layer.msg('已启用!', {icon: 6,time:1000});
+				}else{
+					layer.msg('操作失败!',{icon: 2,time:1000});
+				}
+			}
+		});
+		
+	});
+}
+
+</script>
+</body>
+</html>

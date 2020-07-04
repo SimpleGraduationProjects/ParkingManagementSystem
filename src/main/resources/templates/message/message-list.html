@@ -1,0 +1,89 @@
+﻿<!DOCTYPE HTML>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/head :: commonHead('留言列表')">
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 留言管理 <span class="c-gray en">&gt;</span> 留言列表
+<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i id="shuaxin" class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+	<div class="text-c">
+	<form action="/admin/findMessageByContent">
+		<input type="text" th:value="${contentTmp}" class="input-text" style="width:250px" placeholder="输入留言" id="" name="contentTmp" />
+		<button type="submit" class="btn btn-success" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜留言</button>
+	</form>
+	</div>
+	<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="r">共有数据：<strong th:text="${messageNum}"></strong> 条</span> </div>
+	<table class="table table-border table-bordered table-bg">
+		<thead>
+			<tr>
+				<th scope="col" colspan="9">留言列表</th>
+			</tr>
+			<tr class="text-c">
+				<th width="45">序号</th>
+				<th width="150">留言内容</th>
+				<th width="100">创建时间</th>
+				<th width="100">创建人</th>
+				<th width="150">回复内容</th>
+				<th width="100">回复时间</th>
+				<th width="100">回复人</th>
+				<th width="100">操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="text-c" th:each="message,messageStat : ${messageList}">
+				<td>
+				<span th:text="${messageStat.index+1}"></span>
+				<input type="hidden" th:value="${message.id}" class="inp"/>
+				</td>
+				<td th:text="${message.content}"></td>
+				<td th:text="${#calendars.format(message.createDate,'yyyy-MM-dd')}"></td>
+				<td th:text="${message.user_name}"></td>
+				<td th:text="${message.answer}"></td>
+				<td>
+					<span th:if="${message.answerDate != null}" th:text="${#calendars.format(message.answerDate,'yyyy-MM-dd')}"></span>
+				</td>
+				<td th:text="${message.admin_name}"></td>
+				<td class="td-manage">
+				<a th:if="${message.answer == null}" title="回复留言" href="javascript:;" onclick="answer_add(this,'留言回复','/admin/answer-add','800','300')"
+				class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe70c;</i></a>
+				<a title="删除" href="javascript:;" onclick="message_del(this)"
+				class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<!-- 引入公共js -->
+<span th:include="/common/on-load-js :: commonOnLoadJs"></span>
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+
+function answer_add(obj,title,url,w,h){
+	var messageId = $(obj).parents("tr").find(".inp").val();
+	var urltmp = url+"?messageId="+messageId;
+	layer_show(title,urltmp,w,h);
+}
+
+function message_del(obj){
+	layer.confirm('确认要删除吗？',function(index){
+		var messageId = $(obj).parents("tr").find(".inp").val();
+		$.ajax({
+			type: 'POST',
+			url: '/admin/delMessage',
+			data:{"messageId":messageId},
+			dataType: 'json',
+			success: function(data){
+				if(data.res==0){
+					$(obj).parents("tr").remove();
+					layer.msg('已删除!',{icon:1,time:1000});
+				}else{
+					layer.msg('操作失败!',{icon: 2,time:1000});
+				}
+			}
+		});		
+	});
+}
+</script>
+</body>
+</html>

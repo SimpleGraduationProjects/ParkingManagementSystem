@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/moban/css/index.css}"/>
+	<script th:src="@{/moban/js/main.js}"></script>
+	<title>个人信息</title>
+</head>
+<style>
+	.help-main p {
+		line-height: 50px;
+	}
+</style>
+<body >
+
+<span th:replace="/common/head2 :: header"></span>
+
+<div class="help-wrap">
+	<div class="container clearfix">
+		<div class="bread">当前位置：
+			<a href="#">首页</a> >
+			<a href="#">个人中心</a> >
+			<a href="#">个人信息</a>
+		</div>
+		
+		<span th:replace="/common/userinfo :: userer"></span>
+		
+		<div class="help-r fr">
+			<div class="help-item-title">个人信息</div>
+			<div class="help-main">
+				<form action="/user/update-user" method="post">
+					<input type="hidden" name="id" th:value="${userinfo.id}" />
+					<p><span class="nice">用户名：</span><span th:text="${userinfo.name}"></span>
+					</p>
+					<p>
+						<span class="nice">用户积分：</span>
+						<input readonly="readonly" type="text" th:value="${userinfo.point}">
+					<span class="nice">享受折扣：</span>
+					<input th:if="${userinfo.point<100}" readonly="readonly" type="text" value="无折扣">
+					<input th:if="${userinfo.point>=100&&userinfo.point<300}" readonly="readonly" type="text" value="9折">
+					<input th:if="${userinfo.point>=300&&userinfo.point<500}" readonly="readonly" type="text" value="8折">
+					<input th:if="${userinfo.point>=500}" readonly="readonly" type="text" value="7折">
+					<span style="color: red">注：100~300享9折,300~500享8折,500以上享7折</span>
+					</p>
+					<p><span class="nice">联系电话：</span>
+					<input type="text" name="phone" th:value="${userinfo.phone}">
+					<span class="nice">车牌号码：</span>
+					<input type="text" name="plate_num" th:value="${userinfo.plate_num}"></p>
+					<input class="save" type="submit" value="修改"/>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<span th:replace="/common/foot :: footer"></span>
+
+</body>
+</html>

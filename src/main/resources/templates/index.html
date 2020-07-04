@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+	<link rel="stylesheet" th:href="@{/moban/css/index.css}"/>
+	<link rel="stylesheet" th:href="@{/moban/css/swiper3.07.min.css}"/>
+	<script th:src="@{/moban/js/jquery-1.11.2.min.js}"></script>
+	<script th:src="@{/moban/js/main.js}"></script>
+	<script th:src="@{/moban/js/koala.min.1.5.js}"></script>
+	<style>
+		.swiper-container {
+			width: 1100px;
+			height: 300px;
+			margin: 0 auto;
+		}
+	</style>
+	<title>首页</title>
+</head>
+<body>
+<span th:replace="/common/head2 :: header"></span>
+
+<div class="banner container">
+	<div class="clearfix">
+		<div class="about fl">
+			<img src="/moban/images/timg.jpg" width="288px" alt=""/>
+		</div>
+		<div id="fsD1" class="focus fl">
+			<div id="D1pic1" class="fPic">
+				<div class="fcon">
+					<a ><img src="/moban/images/lun1.jpg" /></a>
+					<span class="shadow"><a >九寨沟7日游</a></span>
+				</div>
+				<div class="fcon">
+					<a ><img src="/moban/images/lun2.jpg" /></a>
+					<span class="shadow"><a >狂欢泼水节</a></span>
+				</div>
+				<div class="fcon">
+					<a ><img src="/moban/images/lun3.jpg" /></a>
+					<span class="shadow"><a >当地玩乐</a></span>
+				</div>
+				<div class="fcon">
+					<a ><img src="/moban/images/lun4.jpg" /></a>
+					<span class="shadow"><a >精选错峰游</a></span>
+				</div>
+				<div class="fcon">
+					<a><img src="/moban/images/lun5.jpg" /></a>
+					<span class="shadow"><a >环球大赏世界海岛</a></span>
+				</div>
+			</div>
+
+			<div class="fbg">
+				<div class="D1fBt" id="D1fBt">
+					<a href="javascript:void(0)" class="current"><i>1</i></a>
+					<a href="javascript:void(0)"><i>2</i></a>
+					<a href="javascript:void(0)"><i>3</i></a>
+					<a href="javascript:void(0)"><i>4</i></a>
+					<a href="javascript:void(0)"><i>5</i></a>
+				</div>
+			</div>
+		</div>
+		<div class="help fr">
+			<h2>最新公告</h2>
+			<ul>
+				<li th:each="notice,noticeStat : ${noticeList}">
+				<a th:href="@{'/notice/notice-detail?id='+${notice.id}}"><span th:text="${notice.title}"></span>
+				<span style="float: right;margin-right: 3%" th:text="${#calendars.format(notice.createDate,'MM-dd')}"></span>
+				</a></li>
+			</ul>
+		</div>
+	</div>
+	<br>
+<img src="/moban/images/img00.png" alt="" style="width: 1200px;height: auto;"/><br>
+</div>
+<span th:replace="/common/foot :: footer"></span>
+<script type="text/javascript">
+	Qfast.add('widgets', { path: "/moban/js/terminator2.2.min.js", type: "js", requires: ['fx'] });
+	Qfast(false, 'widgets', function () {
+		K.tabs({
+			id: 'fsD1',   //焦点图包裹id
+			conId: "D1pic1",  //** 大图域包裹id
+			tabId:"D1fBt",
+			tabTn:"a",
+			conCn: '.fcon', //** 大图域配置class
+			auto: 1,   //自动播放 1或0
+			effect: 'fade',   //效果配置
+			eType: 'click', //** 鼠标事件
+			pageBt:true,//是否有按钮切换页码
+			bns: ['.prev', '.next'],//** 前后按钮配置class
+			interval: 3000  //** 停顿时间
+		})
+	})
+</script>
+</body>
+</html>
