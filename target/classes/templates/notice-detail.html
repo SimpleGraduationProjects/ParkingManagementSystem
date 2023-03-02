@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+	<link rel="stylesheet" th:href="@{/moban/css/index.css}"/>
+	<script th:src="@{/moban/js/main.js}"></script>
+	<title>查看公告</title>
+</head>
+<body >
+
+<span th:replace="/common/head2 :: header"></span>
+
+<div class="mainbody" style="background: #FFF url(images/bodybg.png) repeat-x;">
+	<div class="container clearfix" style="background-color: white">
+		<div class="mainbody_topbg"></div>
+		<div class="bread">当前位置：
+			<a>首页</a> >
+			<a>公告</a> >
+			<a>公告详情</a>
+		</div>
+		<div class="maincontent" style="width: 100%">
+			<div class="post">
+				<h2><a th:text="${notice.title}"></a></h2>
+				<div class="postdata">
+					<div class="date" th:text="${#calendars.format(notice.createDate,'yyyy-MM-dd')}">六月 30th, 2014</div>
+					<div class="cate">发表于 <a href="#">通知公告</a> </div>
+				</div>
+				<div class="content">
+					<p th:text="${notice.content}">您好：</p>
+					<br><br>
+					<p style="text-align: right;" th:text="${#calendars.format(notice.createDate,'yyyy-MM-dd')}">2015年8月19日</p>
+				</div>
+			</div>
+
+		</div>
+		<div class="mainbody_bottombg"></div>
+	</div>
+</div>
+
+
+<span th:replace="/common/foot :: footer"></span>
+
+</body>
+</html>

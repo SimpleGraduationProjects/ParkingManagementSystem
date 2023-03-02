@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="header">
+<div class="top" id="item4">
+	<div class="container clearfix">
+		<ul class="clearfix fr">
+			<li th:if="${session.LogUser == null}"><a href="/join" >登录</a></li>
+			<li th:if="${session.LogUser != null}">
+			<a id="userN" th:text="${session.LogUser.name}"></a></li>
+			<li th:if="${session.LogUser != null}">
+			<a th:href="@{/user/logout}">退出登录</a>
+			</li>
+			<li th:if="${session.LogUser != null}"><a th:href="@{'/user/user-show?id='+${session.LogUser.id}}" style="border: none">个人中心</a></li>
+		</ul>
+	</div>
+</div>
+
+<div class="header">
+	<div class="container clearfix">
+		<div class="logo fl">
+			<a href="/index"><img src="/moban/images/logoo.png" alt=""/></a>
+		</div>
+		<div class="mm fr clearfix">
+           <a href="/car/car-select?lat=0&lng=0" id="carlatlng">查车位</a>
+		</div>
+	</div>
+    <div id="container" style="display: none"></div>
+    <iframe id="my_iframe" style="display: none"></iframe>
+    <span th:include="/common/on-load-js :: commonOnLoadJs"></span>
+
+    <script type="text/javascript"
+            src="https://webapi.amap.com/maps?v=1.4.11&key=c2c6de722e04b57b6a20f48623c37828&plugin=AMap.Autocomplete,AMap.PlaceSearch"></script>
+    <script type="text/javascript" src="https://cache.amap.com/lbs/static/addToolbar.js"></script>
+    <script type="text/javascript">
+
+        var lat=0;
+        var lng=0;
+
+        var map = new AMap.Map('container', {
+            resizeEnable: true
+        });
+
+
+
+        AMap.plugin('AMap.Geolocation', function () {
+            var geolocation = new AMap.Geolocation({
+                enableHighAccuracy: true,//是否使用高精度定位，默认:true
+                timeout: 10000,          //超过10秒后停止定位，默认：5s
+                buttonPosition: 'RB',    //定位按钮的停靠位置
+                buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+                zoomToAccuracy: true,   //定位成功后是否自动调整地图视野到定位点
+
+            });
+            map.addControl(geolocation);
+            geolocation.getCurrentPosition(function (status, result) {
+                if (status == 'complete') {
+                    onComplete(result)
+                } else {
+                    onError(result)
+                }
+            });
+        });
+
+        //解析定位结果
+        function onComplete(data) {
+            // document.getElementById('status').innerHTML = '定位成功'
+            var str = [];
+            var poStr = data.position.toString();
+            var po = poStr.split(",");
+            str.push('定位结果：');
+            str.push('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;经度：' + po[0]);
+            str.push('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;纬度：' + po[1]);
+            lat=po[0];
+            lng=po[1];
+
+            console.log(lat);
+            console.log(lng);
+
+            $('#carlatlng').attr("href","/car/car-select?lat="+lat+"&lng="+lng);
+            str.push('定位类别：' + data.location_type);
+            if (data.accuracy) {
+                str.push('精度：' + data.accuracy + ' 米');
+            }//如为IP精确定位结果则没有精度信息
+            str.push('是否经过偏移：' + (data.isConverted ? '是' : '否'));
+            // document.getElementById('result').innerHTML = str.join('<br>');
+        }
+
+        //解析定位错误信息
+        function onError(data) {
+            // document.getElementById('status').innerHTML = '定位失败'
+            // document.getElementById('result').innerHTML = '失败原因排查信息:' + data.message;
+        }
+
+
+    </script>
+
+
+</div>
+</div>
+
+
+</html>

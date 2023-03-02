@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+	<link rel="stylesheet" th:href="@{/moban/css/index.css}"/>
+	<link rel="stylesheet" th:href="@{/moban/css/table.css}"/>
+	<script th:src="@{/moban/js/jquery-1.7.2.min.js}"></script>
+	<script th:src="@{/moban/js/main.js}"></script>
+	<script type="text/javascript" th:src="@{/lib/My97DatePicker/4.8/WdatePicker.js}"></script>
+	<title>查询车位</title>
+</head>
+<body >
+
+<span th:replace="/common/head2 :: header"></span>
+
+<div class="list-main">
+	<div class="container">
+		<div class="bread" style="margin-bottom: 0;">当前位置：
+			<a href="#">首页</a> >
+			<a href="#">查车位</a>
+		</div>
+		<ul class="select">
+			<li class="select-result">
+				<dl>
+					<dt>筛选条件：</dt>
+					<dd class="select-no">
+						<form action="/car/findCar" method="post" id="findP">
+							<select name="status" onchange="selectPark()" class="form-control">
+								<option th:selected="${status==-1}" value="-1">全部</option>
+								<option th:selected="${status==0}" value="0">可预约</option>
+								<option th:selected="${status==1}" value="1">已预约</option>
+							</select>
+						</form>
+					</dd>
+				</dl>
+			</li>
+		</ul>
+		<div class="tabs book clearfix">
+			<dl th:each="car,carStat : ${carList}">
+				<dt><a th:href="@{'/car/detail?id='+${car.id}}">
+				<img th:if="${car.status==0}" src="/moban/images/cw.png" alt="可预约" title="可预约"/></a>
+				<img th:if="${car.status!=0}" src="/moban/images/cw2.png" alt="已占用"  title="已占用"/>
+				</dt>
+				<dd>
+					<p><a th:href="@{'/car/detail?id='+${car.id}}" th:text="${car.name}"></a></p>
+					<p>距离:<span th:text="${car.length}"></span></p>
+					<p th:text="${'￥'+car.price}"></p>
+				</dd>
+
+			</dl>
+		</div>
+
+	</div>
+</div>
+
+
+<span th:replace="/common/foot :: footer"></span>
+<script type="text/javascript">
+function selectPark(){
+	$("#findP").submit();
+}
+</script>
+</body>
+</html>

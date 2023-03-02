@@ -1,0 +1,50 @@
+﻿<!DOCTYPE HTML>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/head :: commonHead('我的桌面')">
+</head>
+<body>
+<div class="page-container">
+	<p class="f-20 text-success">欢迎使用后台管理系统 <span class="f-14">v1.0</span></p>
+	<table class="table table-border table-bordered table-bg mt-20">
+		<thead>
+			<tr>
+				<th colspan="2" scope="col">服务器信息</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<th width="30%">服务器计算机名</th>
+				<td th:text="${localName}"></td>
+			</tr>
+			<tr>
+				<td>服务器IP地址</td>
+				<td th:text="${localAddr}"></td>
+			</tr>
+			<tr>
+				<td>服务器域名</td>
+				<td th:text="${serverName}"></td>
+			</tr>
+			<tr>
+				<td>服务器端口 </td>
+				<td th:text="${localPort}"></td>
+			</tr>
+			<tr>
+				<td>服务器操作系统 </td>
+				<td th:text="${osName}"></td>
+			</tr>
+			<tr>
+				<td>Java版本 </td>
+				<td th:text="${javaVersion}"></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<footer class="footer mt-20">
+	<div class="container">
+		<p>Copyright &copy;1956-2018 后台管理系统.</p>
+	</div>
+</footer>
+<!-- 引入公共js -->
+<span th:include="/common/on-load-js :: commonOnLoadJs"></span>
+</body>
+</html>

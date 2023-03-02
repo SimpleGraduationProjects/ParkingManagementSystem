@@ -1,0 +1,83 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/head :: commonHead('修改个人信息')">
+</head>
+<body>
+<article class="page-container">
+	<form action="/admin/updateAdmin" method="post" class="form form-horizontal" id="form-change-password">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>用户名：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="hidden" name="id"  th:value="${admin.id}"/>
+				<input type="text" th:value="${admin.name}" class="input-text" autocomplete="off" placeholder="输入用户名" name="name" id="name">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>新密码：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="password"  class="input-text" autocomplete="off" placeholder="输入密码" name="password" id="password">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>确认密码：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="password" class="input-text" autocomplete="off" placeholder="确认密码" name="password2" id="password2">
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+				<input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;保存&nbsp;&nbsp;">
+			</div>
+		</div>
+	</form>
+</article>
+
+<!-- 引入公共js -->
+<span th:include="/common/on-load-js :: commonOnLoadJs"></span>
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="lib/jquery.validation/1.14.0/jquery.validate.js"></script> 
+<script type="text/javascript" src="lib/jquery.validation/1.14.0/validate-methods.js"></script> 
+<script type="text/javascript" src="lib/jquery.validation/1.14.0/messages_zh.js"></script> 
+<script type="text/javascript">
+$(function(){
+	$("#form-change-password").validate({
+		rules:{
+			name:{
+				required:true,
+			},
+			password:{
+				required:true,
+				minlength:4,
+				maxlength:16
+			},
+			password2:{
+				required:true,
+				minlength:4,
+				maxlength:16,
+				equalTo: "#password"
+			},
+		},
+		onkeyup:false,
+		focusCleanup:true,
+		success:"valid",
+		submitHandler:function(form){
+			$(form).ajaxSubmit({
+				async : false,
+				success: function(data){
+					if(data.res==0){
+						layer.msg('修改成功!',{icon:1,time:1000});
+					}else{
+						layer.msg('修改失败!',{icon: 2,time:1000});
+					}
+				},
+                error: function(XmlHttpRequest, textStatus, errorThrown){
+					layer.msg('error!',{icon:1,time:1000});
+				}
+			});
+		}
+	});
+});
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

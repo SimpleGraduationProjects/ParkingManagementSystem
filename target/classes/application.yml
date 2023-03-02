@@ -1,0 +1,18 @@
+#数据库连接
+spring: 
+    thymeleaf: 
+        cache: false
+        prefix: classpath:/templates/
+        suffix: .html
+        encoding: UTF-8
+        content-type: text/html
+        mode: LEGACYHTML5
+    datasource: 
+        url: jdbc:mysql://localhost:3306/graduation_park?characterEncoding=utf8&useSSL=true
+        username: root
+        password: 123456
+        driver-class-name: com.mysql.jdbc.Driver
+#服务器端口
+server: 
+  port: 8080
+  

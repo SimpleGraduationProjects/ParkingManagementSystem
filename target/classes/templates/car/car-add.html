@@ -1,0 +1,246 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head th:include="/common/head :: commonHead('添加车位')">
+</head>
+<body>
+<article class="page-container">
+    <div style="width: 50%;float:left;">
+        <form class="form form-horizontal" id="form-car-add" action="/admin/car-save">
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>车次编号：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" placeholder="车位编号" id="name" name="name"/>
+                </div>
+            </div>
+
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>每天/元：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" placeholder="每天/元" id="price" name="price"/>
+                </div>
+            </div>
+
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>地址：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" placeholder="地址" id="address" name="address"/>
+                </div>
+            </div>
+
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>地址经度：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" placeholder="地址经度" id="addressLat" name="addressLat"/>
+                </div>
+            </div>
+
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>地址纬度：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" placeholder="地址纬度" id="addressLon" name="addressLon"/>
+                </div>
+            </div>
+
+            <div class="row cl">
+                <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                    <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;"/>
+                </div>
+            </div>
+        </form>
+
+
+            <fieldset>
+
+                <legend>帮助信息</legend>
+
+
+                <div class="row cl">
+                    <label class="form-label col-xs-4 col-sm-3"></span>投放地查询：</label>
+                    <div class="formControls col-xs-8 col-sm-9">
+                        <input type="text" class="input-text" placeholder="投放地查询" id="tipinput" name="tipinput"/>
+                    </div>
+                </div>
+
+                <legend>查询定位信息</legend>
+
+
+                <div style=" margin-left: 18px;">
+                    <p id='pois'></p>
+                </div>
+
+
+                <legend>本地定位信息</legend>
+
+                <div style=" margin-left: 18px;">
+                    定位状态：<span id='status'></span>
+                    <p id='result'></p>
+                </div>
+
+
+            </fieldset>
+
+
+
+    </div>
+    <div style="width: 47%; height: 500px;float: right;   margin-left: 15px;">
+        <div id='container' style="height: 500px;"></div>
+    </div>
+</article>
+
+<!-- 引入公共js -->
+<span th:include="/common/on-load-js :: commonOnLoadJs"></span>
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" th:src="@{/lib/My97DatePicker/4.8/WdatePicker.js}"></script>
+<script type="text/javascript" th:src="@{/lib/jquery.validation/1.14.0/jquery.validate.js}"></script>
+<script type="text/javascript" th:src="@{/lib/jquery.validation/1.14.0/validate-methods.js}"></script>
+<script type="text/javascript" th:src="@{/lib/jquery.validation/1.14.0/messages_zh.js}"></script>
+<script type="text/javascript">
+    $(function () {
+
+        $('.skin-minimal input').iCheck({
+            checkboxClass: 'icheckbox-blue',
+            radioClass: 'iradio-blue',
+            increaseArea: '20%'
+        });
+
+
+        $("#form-car-add").validate({
+            rules: {
+                name: {
+                    required: true
+                },
+                price: {
+                    required: true,
+                    number: true
+                },
+                address: {
+                    required: true,
+
+                },
+                addressLat: {
+                    required: true,
+
+                },
+                addressLon: {
+                    required: true,
+
+                }
+            },
+            onkeyup: false,
+            focusCleanup: true,
+            success: "valid",
+            submitHandler: function (form) {
+                $(form).ajaxSubmit({
+                    async: false,
+                    success: function (data) {
+                        if (data.res == 0) {
+                            layer.msg('添加成功!', {icon: 1, time: 1000});
+                            setTimeout(function () {
+                                var index = parent.layer.getFrameIndex(window.name);
+                                parent.$('#shuaxin').click();
+                                parent.layer.close(index);
+                            }, "1000");
+                        } else {
+                            layer.msg('添加失败!', {icon: 2, time: 1000});
+                        }
+                    },
+                    error: function (XmlHttpRequest, textStatus, errorThrown) {
+                        layer.msg('error!', {icon: 1, time: 1000});
+                    }
+                });
+            }
+        });
+
+    });
+</script>
+
+<script type="text/javascript"
+        src="https://webapi.amap.com/maps?v=1.4.11&key=c2c6de722e04b57b6a20f48623c37828&plugin=AMap.Autocomplete,AMap.PlaceSearch"></script>
+<script type="text/javascript" src="https://cache.amap.com/lbs/static/addToolbar.js"></script>
+<script type="text/javascript">
+    var map = new AMap.Map('container', {
+        resizeEnable: true
+    });
+
+    var auto = new AMap.Autocomplete({
+        input: "tipinput"
+    });
+    var placeSearch = new AMap.PlaceSearch({
+        map: map
+    });  //构造地点查询类
+    AMap.event.addListener(auto, "select", select);//注册监听，当选中某条记录时会触发
+    function select(e) {
+        console.log(e);
+        placeSearch.setCity(e.poi.adcode);
+        placeSearch.search(e.poi.name, function (status, result) {
+            // 搜索成功时，result即是对应的匹配数据
+            console.log(status);
+            console.log(result);
+            var pois = result.poiList.pois;
+            var str = [];
+            for (var i = 0; i < pois.length; i++) {
+                str.push('定位地址：' + pois[i].pname + pois[i].cityname + pois[i].adname + pois[i].address + pois[i].name);
+                var poStr = pois[i].location.toString();
+                var po = poStr.split(",");
+                str.push('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;经度：' + po[0]);
+                str.push('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;纬度：' + po[1] + "<br>");
+
+                if (i == 0) {
+                    document.getElementById('address').value = pois[i].pname + pois[i].cityname + pois[i].adname + pois[i].address + pois[i].name;
+                    document.getElementById('addressLat').value = po[0];
+                    document.getElementById('addressLon').value = po[1];
+                }
+            }
+            document.getElementById('pois').innerHTML = str.join('<br>');
+
+        });  //关键字查询查询
+    }
+
+
+    AMap.plugin('AMap.Geolocation', function () {
+        var geolocation = new AMap.Geolocation({
+            enableHighAccuracy: true,//是否使用高精度定位，默认:true
+            timeout: 10000,          //超过10秒后停止定位，默认：5s
+            buttonPosition: 'RB',    //定位按钮的停靠位置
+            buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+            zoomToAccuracy: true,   //定位成功后是否自动调整地图视野到定位点
+
+        });
+        map.addControl(geolocation);
+        geolocation.getCurrentPosition(function (status, result) {
+            if (status == 'complete') {
+                onComplete(result)
+            } else {
+                onError(result)
+            }
+        });
+    });
+
+    //解析定位结果
+    function onComplete(data) {
+        document.getElementById('status').innerHTML = '定位成功'
+        var str = [];
+        var poStr = data.position.toString();
+        var po = poStr.split(",");
+        str.push('定位结果：');
+        str.push('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;经度：' + po[0]);
+        str.push('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;纬度：' + po[1]);
+
+        str.push('定位类别：' + data.location_type);
+        if (data.accuracy) {
+            str.push('精度：' + data.accuracy + ' 米');
+        }//如为IP精确定位结果则没有精度信息
+        str.push('是否经过偏移：' + (data.isConverted ? '是' : '否'));
+        document.getElementById('result').innerHTML = str.join('<br>');
+    }
+
+    //解析定位错误信息
+    function onError(data) {
+        document.getElementById('status').innerHTML = '定位失败'
+        document.getElementById('result').innerHTML = '失败原因排查信息:' + data.message;
+    }
+</script>
+
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>
